@@ -69,8 +69,6 @@ router.post('/login', async (req, res) => {
 
     4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
       the response body should include a string exactly as follows: "invalid credentials".
-
-      save the token in the session
   */
   const { username, password } = req.body;
   if (!username || !password) {
@@ -85,9 +83,8 @@ router.post('/login', async (req, res) => {
       res.status(400).json({ message: 'invalid credentials' });
     } else {
       const token = jwt.sign({ id: user.id }, JWT_SECRET);
-      req.session.user = user;
+      req.session.token = token;
       res.status(200).json({ message: 'welcome, ' + user.username, token });
-      console.log(req.session)
     }
   }
 });

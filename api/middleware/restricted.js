@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'shh';
 module.exports = (req, res, next) => {
   /*
     IMPLEMENT
@@ -10,9 +12,16 @@ module.exports = (req, res, next) => {
     3- On invalid or expired token in the Authorization header,
       the response body should include a string exactly as follows: "token invalid".
   */
-  if (!req.session.user) {
+    
+  const token = req.session.token;
+  if (req.session && !token) {
     res.status(401).json({ message: 'token required' });
   } else {
-    next();
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+      if (err) {
+        res.status(401).json({ message: 'token invalid' });
+      }
+      next();
+    });
   }
 };
