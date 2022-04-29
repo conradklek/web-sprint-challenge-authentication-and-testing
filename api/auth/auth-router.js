@@ -70,23 +70,21 @@ router.post('/login', async (req, res) => {
     4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
       the response body should include a string exactly as follows: "invalid credentials".
   */
-  const { username, password } = req.body;
-  if (!username || !password) {
-    res.status(400).json({ message: 'username and password required' });
-  }
-  const user = await db('users').where({ username }).first();
-  if (!user) {
-    res.status(400).json({ message: 'invalid credentials' });
-  } else {
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) {
-      res.status(400).json({ message: 'invalid credentials' });
-    } else {
-      const token = jwt.sign({ id: user.id }, JWT_SECRET);
-      req.session.token = token;
-      res.status(200).json({ message: 'welcome, ' + user.username, token });
-    }
-  }
+      const { username, password } = req.body;
+      if (!username || !password) {
+        res.status(400).json({ message: 'username and password required' });
+      }
+      const user = await db('users').where({ username }).first();
+      if (!user) {
+        res.status(400).json({ message: 'invalid credentials' });
+      }
+      const valid = await bcrypt.compareSync(password, user.password);
+      if (!valid) {
+        res.status(400).json({ message: 'invalid credentials' });
+      } else {
+        const token = jwt.sign({ id: user.id }, JWT_SECRET);
+        res.status(200).json({ message: 'welcome, ' + user.username, token });
+      }
 });
 
 module.exports = router;

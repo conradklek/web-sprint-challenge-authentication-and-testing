@@ -71,20 +71,3 @@ describe('/api/auth', () => {
     })
   })
 })
-
-describe('/api/jokes', () => {
-  describe('GET /', () => {
-    it('should return 200 if a token is provided', async () => {
-      await request(server)
-        .post('/api/auth/register')
-        .send(user)
-      await request(server)
-        .post('/api/auth/login')
-        .send(user)
-        .expect(200)
-      await request(server)
-        .get('/api/jokes')
-        .set('Authorization', `Bearer ${res.body.token}`)
-        .expect(200)
-  })
-})
