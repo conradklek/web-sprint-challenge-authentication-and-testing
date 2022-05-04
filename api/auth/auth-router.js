@@ -4,6 +4,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'shh';
 
+router.get('/', async (req, res) => {
+  const users = await db('users');
+  res.status(200).json(users);
+})
+
 router.post('/register', async (req, res) => {
   /*
     IMPLEMENT
