@@ -81,15 +81,14 @@ router.post('/login', async (req, res) => {
       }
       const user = await db('users').where({ username }).first();
       if (!user) {
-        res.status(400).json({ message: 'invalid credentials' });
+        return res.status(400).json({ message: 'invalid credentials' });
       }
-      const valid = await bcrypt.compareSync(password, user.password);
+      const valid = await bcrypt.compare(password, user.password);
       if (!valid) {
-        res.status(400).json({ message: 'invalid credentials' });
-      } else {
-        const token = jwt.sign({ id: user.id }, JWT_SECRET);
-        res.status(200).json({ message: 'welcome, ' + user.username, token });
+        return res.status(400).json({ message: 'invalid credentials' });
       }
+      const token = jwt.sign({ id: user.id }, JWT_SECRET);
+      return res.status(200).json({ message: 'welcome, ' + user.username, token });
 });
 
 module.exports = router;
