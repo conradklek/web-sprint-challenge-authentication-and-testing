@@ -71,3 +71,14 @@ describe('/api/auth', () => {
     })
   })
 })
+
+describe('/api/jokes', () => {
+    describe('GET /', () => {
+      it('401 if the request headers include authorization', async () => {
+        await request(server)
+          .get('/api/jokes')
+          .set('Authorization', 'Bearer')
+          .expect(401)
+      })
+    })
+  })
